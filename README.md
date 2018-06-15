@@ -7,3 +7,7 @@ A WebAssembly 2D shooter game written in rust.
 ```bash
 $ docker-compose run --rm compiler make build
 ```
+
+## Credits
+
+This game was inspired by [rocket_wasm](https://github.com/aochagavia/rocket_wasm)
