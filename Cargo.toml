@@ -1,0 +1,10 @@
+[package]
+name = "sh00t3r"
+version = "0.1.0"
+authors = ["Nicolas MURE <nicolas.mure@knplabs.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+

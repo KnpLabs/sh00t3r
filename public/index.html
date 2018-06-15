@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>sh00t3r</title>
+    <script>
+      fetch('sh00t3r.gc.wasm')
+        .then(r => r.arrayBuffer())
+        .then(r => WebAssembly.instantiate(r))
+        .then(wasmModule => {
+            alert(`2 + 1 = ${wasmModule.instance.exports.add_one(2)}`);
+        });
+    </script>
+  </head>
+  <body></body>
+</html>
