@@ -3,6 +3,9 @@ version: '3.5'
 services:
   compiler:
     build: .
+    environment:
+      # to install dependencies in the project, instead of user wide
+      - CARGO_HOME=/app/.cargo
     volumes:
       - ".:/app"
     working_dir: /app

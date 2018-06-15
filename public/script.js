@@ -31,10 +31,10 @@ const loadWasm = imports => fetch('./sh00t3r.gc.wasm')
     // the exported functions from the wasm
     const exports = results.instance.exports
 
-    console.log(exports)
-
-    exports.build_game(800, 600)
+    exports.init_game()
     exports.render()
+
+    // @TODO : make requestAnimationFrame loop
   })
 
 const runGame = () => {

@@ -7,4 +7,4 @@ authors = ["Nicolas MURE <nicolas.mure@knplabs.com>"]
 crate-type = ["cdylib"]
 
 [dependencies]
-
+lazy_static = "1.0.1"
