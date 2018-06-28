@@ -6,10 +6,10 @@ A WebAssembly 2D shooter game written in rust.
 
 ```bash
 $ docker-compose run --rm compiler make build
+$ docker-compose up -d devserver
 ```
 
-Then open the [`public/index.html`](/public/index.html) file with your web
-browser to play the game.
+Then go to http://localhost:8080 with your web browser to play the game.
 
 ## Credits
 

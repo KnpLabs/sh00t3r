@@ -125,10 +125,16 @@ const runGame = (shooter) => {
 
   const resources = buildResources()
   const imports = buildImports(ctx, resources)
+  bindImports(imports)
 
   shooter.init_game();
   shooter.render();
 }
+
+const bindImports = (imports) =>
+  Object
+  .entries(imports)
+  .forEach(([name, fn]) => window[name] = fn)
 
 const shooter = import('./sh00t3r')
 shooter.then(runGame)
