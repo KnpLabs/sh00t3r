@@ -9,4 +9,13 @@ services:
     volumes:
       - ".:/app"
     working_dir: /app
-    command: "true"
+    command: "make build"
+
+  devserver:
+    image: node:9-slim
+    command: npm run serve
+    working_dir: /app
+    volumes:
+      - ".:/app"
+    ports:
+      - 8080:8080

@@ -41,5 +41,6 @@ RUN rustup target add wasm32-unknown-unknown --toolchain nightly \
     && rustup target add wasm32-unknown-emscripten --toolchain nightly
 
 RUN cargo install --git https://github.com/alexcrichton/wasm-gc
+RUN cargo install wasm-bindgen-cli
 
 WORKDIR /app
