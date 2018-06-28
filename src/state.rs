@@ -1,14 +1,14 @@
 pub struct State {
-    width: u16,
-    height: u16,
-    score: u16,
-    player: PlayerState
+    pub width: u16,
+    pub height: u16,
+    pub score: u16,
+    pub player: PlayerState
 }
 
-struct PlayerState {
-    x: u16,
-    y: u16,
-    life: u8
+pub struct PlayerState {
+    pub x: u16,
+    pub y: u16,
+    pub life: u8
 }
 
 impl State {

@@ -15,10 +15,16 @@ lazy_static! {
 // import functions from JS
 extern {
     fn clear_stage();
+    fn draw_player(x: u16, y: u16);
 }
 
 fn build_initial_state(width: u16, height: u16) -> State {
     State::new(width, height)
+}
+
+#[no_mangle]
+pub extern fn update_state(elapsed_time: f32) {
+    // to be implemented
 }
 
 #[no_mangle]
@@ -54,4 +60,16 @@ pub extern fn toggle_shoot() {
 #[no_mangle]
 pub unsafe extern fn render() {
     clear_stage();
+
+    let state = &mut STATE.lock().unwrap();
+
+    draw_player(state.player.x, state.player.y);
+
+    // enemies
+
+    // bullets
+
+    // score
+
+    // hud
 }
