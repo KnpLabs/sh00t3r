@@ -22,7 +22,7 @@ static PLAYER_VELOCITY: u16 = 200;
 static BULLET_VELOCITY: u16 = 500;
 
 // unit: bullets/seconds
-static BULLET_FIRERATE: u16 = 2;
+static BULLET_FIRERATE: u16 = 3;
 
 #[wasm_bindgen]
 extern {
@@ -67,11 +67,11 @@ fn move_player(state: &mut State, elapsed_time: f32) {
 fn move_bullets(state: &mut State, elapsed_time: f32) {
     let delta_m: u16 = (BULLET_VELOCITY as f32 * elapsed_time) as u16;
 
-    for i in 0..state.bullets.len() {
-        if state.bullets[i].going_up {
-            state.bullets[i].y = state.bullets[i].y - delta_m;
+    for bullet in state.bullets.iter_mut() {
+        if bullet.going_up {
+            bullet.y -= delta_m;
         } else {
-            state.bullets[i].y = state.bullets[i].y + delta_m;
+            bullet.y += delta_m;
         }
     }
 
@@ -83,10 +83,10 @@ fn move_bullets(state: &mut State, elapsed_time: f32) {
     });
 }
 
-fn shoot_bullets(state: &mut State, elapsed_time: f32) {
+fn shoot_bullet(state: &mut State, elapsed_time: f32) {
     let shooting_frame = 1.0 / BULLET_FIRERATE as f32;
 
-    state.last_shoot_elapsed = state.last_shoot_elapsed + elapsed_time;
+    state.last_shoot_elapsed += elapsed_time;
 
     if state.shooting && state.last_shoot_elapsed > shooting_frame {
         state.bullets.push(BulletState::from_player(&state.player));
@@ -96,13 +96,12 @@ fn shoot_bullets(state: &mut State, elapsed_time: f32) {
 
 #[wasm_bindgen]
 pub extern fn update_state(elapsed_time: f32) {
-    // to be implemented
     let state = &mut STATE.lock().unwrap();
 
     move_player(state, elapsed_time);
     move_bullets(state, elapsed_time);
 
-    shoot_bullets(state, elapsed_time);
+    shoot_bullet(state, elapsed_time);
 }
 
 #[wasm_bindgen]
