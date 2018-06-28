@@ -1,16 +1,20 @@
-#![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+#![feature(extern_prelude, type_ascription, proc_macro, wasm_custom_section, wasm_import_module)]
 
 #[macro_use]
 extern crate lazy_static;
 extern crate wasm_bindgen;
 
 mod state;
+mod enemy;
+pub mod externs;
 
 use std::cmp;
 use std::sync::Mutex;
 use self::state::State;
 use self::state::BulletState;
 use wasm_bindgen::prelude::*;
+use self::enemy::generate_enemy;
+use self::externs::*;
 
 // Lazy static access to the STATE var.
 // Use Mutex as JS is single threaded (and rust is not)
@@ -24,16 +28,6 @@ static BULLET_VELOCITY: u16 = 500;
 
 // unit: bullets/seconds
 static BULLET_FIRERATE: u16 = 3;
-
-#[wasm_bindgen]
-extern {
-    fn clear_stage();
-    fn draw_player(x: u16, y: u16);
-    fn draw_bullet(x: u16, y: u16);
-
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(msg: &str);
-}
 
 macro_rules! println {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
@@ -105,6 +99,11 @@ pub extern fn update_state(elapsed_time: f32) {
     move_bullets(state, elapsed_time);
 
     shoot_bullet(state, elapsed_time);
+
+    match generate_enemy(state.width) {
+        Some(x) => state.enemies.push(x),
+        None => {},
+    }
 }
 
 #[wasm_bindgen]
@@ -155,6 +154,10 @@ pub extern fn render() {
     let state = &mut STATE.lock().unwrap();
 
     draw_player(state.player.x, state.player.y);
+
+    for enemy in state.enemies.iter() {
+        draw_enemy(enemy.x, enemy.y);
+    }
 
     // enemies
 
