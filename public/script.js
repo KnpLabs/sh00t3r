@@ -7,7 +7,6 @@ const drawObject = (ctx, resource, dx, dy) =>
   ctx.drawImage(resource.canvas, centerPosToTopLeft(dx, resource), centerPosToTopLeft(dy, resource))
 
 const drawPlayer = (ctx, resources) => (dx, dy) =>
-  console.log('drawPlayer') ||
   drawObject(ctx, resources.player, dx, dy)
 
 const createContext = (w, h) => {
@@ -120,6 +119,9 @@ const loadWasm = imports => fetch('./sh00t3r.gc.wasm')
 const runGame = () => {
   const ctx = document.getElementById('canvas').getContext('2d')
   ctx.fillStyle = 'black'
+
+  ctx.canvas.width = 800;
+  ctx.canvas.height = 600;
 
   const resources = buildResources()
   const imports = buildImports(ctx, resources)

@@ -12,6 +12,9 @@ lazy_static! {
     static ref STATE: Mutex<State> = Mutex::new(build_initial_state(800, 600));
 }
 
+// unit: pixels/seconds
+static PLAYER_VELOCITY: f32 = 100.0;
+
 // import functions from JS
 extern {
     fn clear_stage();
@@ -22,9 +25,33 @@ fn build_initial_state(width: u16, height: u16) -> State {
     State::new(width, height)
 }
 
+fn move_player(state: &mut State, elapsed_time: f32) {
+    let delta_m = PLAYER_VELOCITY * elapsed_time;
+
+    // todo : add checks when colliding on the world edges
+    if state.moving_right {
+        state.player.x = (state.player.x as f32 + delta_m) as u16;
+    }
+
+    if state.moving_left {
+        state.player.x = (state.player.x as f32 - delta_m) as u16;
+    }
+
+    if state.moving_up {
+        state.player.y = (state.player.y as f32 - delta_m) as u16;
+    }
+
+    if state.moving_down {
+        state.player.y = (state.player.y as f32 + delta_m) as u16;
+    }
+}
+
 #[no_mangle]
 pub extern fn update_state(elapsed_time: f32) {
     // to be implemented
+    let state = &mut STATE.lock().unwrap();
+
+    move_player(state, elapsed_time);
 }
 
 #[no_mangle]
@@ -33,28 +60,38 @@ pub extern fn init_game() {
 }
 
 #[no_mangle]
-pub extern fn toggle_move_up() {
-    // to be implemented
+pub extern fn toggle_move_up(enabled: u16) {
+    let state = &mut STATE.lock().unwrap();
+
+    state.moving_up = enabled != 0
 }
 
 #[no_mangle]
-pub extern fn toggle_move_down() {
-    // to be implemented
+pub extern fn toggle_move_down(enabled: u16) {
+    let state = &mut STATE.lock().unwrap();
+
+    state.moving_down = enabled != 0
 }
 
 #[no_mangle]
-pub extern fn toggle_move_left() {
-    // to be implemented
+pub extern fn toggle_move_left(enabled: u16) {
+    let state = &mut STATE.lock().unwrap();
+
+    state.moving_left= enabled != 0
 }
 
 #[no_mangle]
-pub extern fn toggle_move_right() {
-    // to be implemented
+pub extern fn toggle_move_right(enabled: u16) {
+    let state = &mut STATE.lock().unwrap();
+
+    state.moving_right = enabled != 0
 }
 
 #[no_mangle]
-pub extern fn toggle_shoot() {
-    // to be implemented
+pub extern fn toggle_shoot(enabled: u16) {
+    let state = &mut STATE.lock().unwrap();
+
+    state.shooting = enabled != 0
 }
 
 #[no_mangle]
