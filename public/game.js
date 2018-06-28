@@ -93,29 +93,6 @@ const buildKeyBindings = exports => {
   document.addEventListener('keyup', e => handleKey(e.key, false));
 }
 
-const loadWasm = imports => fetch('./sh00t3r.gc.wasm')
-  .then(response => response.arrayBuffer())
-  .then(bytes => WebAssembly.instantiate(bytes, { env: imports }))
-  .then(results => {
-    // the exported functions from the wasm
-    const exports = results.instance.exports
-
-    buildKeyBindings(exports)
-    exports.init_game()
-
-    var currentTimestamp = new Date()
-    const update = () => {
-      window.requestAnimationFrame(update)
-
-      const oldTimestamp = currentTimestamp
-      currentTimestamp = new Date()
-
-      exports.update_state((currentTimestamp - oldTimestamp) / 1000)
-      exports.render()
-    }
-    window.requestAnimationFrame(update);
-  })
-
 const runGame = (shooter) => {
   const ctx = document.getElementById('canvas').getContext('2d')
   ctx.fillStyle = 'black'
@@ -128,7 +105,20 @@ const runGame = (shooter) => {
   bindImports(imports)
 
   shooter.init_game();
-  shooter.render();
+  buildKeyBindings(shooter)
+
+  var currentTimestamp = new Date()
+  const update = () => {
+    window.requestAnimationFrame(update)
+
+    const oldTimestamp = currentTimestamp
+    currentTimestamp = new Date()
+
+    exports.update_state((currentTimestamp - oldTimestamp) / 1000)
+    exports.render()
+  }
+
+  window.requestAnimationFrame(update);
 }
 
 const bindImports = (imports) =>
