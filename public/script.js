@@ -1,27 +1,60 @@
 const buildClearStage = ctx => () =>
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
-// buildImports :: CanvasRenderingContext2D -> Object
-// the functions to import into the wasm
-const buildImports = (ctx, resources) => ({
-  clear_stage: buildClearStage(ctx),
-})
+const createContext = (w, h) => {
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+
+  return canvas.getContext('2d');
+}
 
 const buildPlayer = () => {
-  const canvas = document.createElement('canvas')
-  canvas.width = 20
-  canvas.height = 20
-
   // @FIXME : draw a nicer object for the player, or use a spacecraft image
-  const ctx = canvas.getContext('2d')
-  ctx.fillStyle = 'white'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  const ctx = createContext(20, 20)
 
-  return canvas
+  ctx.fillStyle = 'green'
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+
+  return ctx
+}
+
+const buildEnemy = () => {
+   const ctx = createContext(20, 20)
+
+   ctx.fillStyle = 'red';
+   ctx.beginPath();
+   ctx.arc(
+     ctx.canvas.width / 2,
+     ctx.canvas.height / 2,
+     ctx.canvas.width / 2,
+     0,
+     2 * Math.PI
+   );
+   ctx.fill();
+
+   return ctx
+}
+
+const buildBullet = () => {
+    const ctx = createContext(2, 5)
+
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+
+    return ctx
 }
 
 const buildResources = () => ({
   player: buildPlayer(),
+  enemy: buildEnemy(),
+  bullet: buildBullet()
+})
+
+// buildImports :: CanvasRenderingContext2D -> Object
+// the functions to import into the wasm
+const buildImports = (ctx, resources) => ({
+  clear_stage: buildClearStage(ctx),
 })
 
 const loadWasm = imports => fetch('./sh00t3r.gc.wasm')
