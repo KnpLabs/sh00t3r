@@ -1,6 +1,15 @@
 const buildClearStage = ctx => () =>
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
+const centerPosToTopLeft = (x, resource) => x - resource.canvas.width / 2
+
+const drawObject = (ctx, resource, dx, dy) =>
+  ctx.drawImage(resource.canvas, centerPosToTopLeft(dx, resource), centerPosToTopLeft(dy, resource))
+
+const drawPlayer = (ctx, resources) => (dx, dy) =>
+  console.log('drawPlayer') ||
+  drawObject(ctx, resources.player, dx, dy)
+
 const createContext = (w, h) => {
   const canvas = document.createElement('canvas');
   canvas.width = w;
@@ -55,6 +64,7 @@ const buildResources = () => ({
 // the functions to import into the wasm
 const buildImports = (ctx, resources) => ({
   clear_stage: buildClearStage(ctx),
+  draw_player: drawPlayer(ctx, resources)
 })
 
 const buildKeyBindings = exports => {
@@ -93,9 +103,18 @@ const loadWasm = imports => fetch('./sh00t3r.gc.wasm')
 
     buildKeyBindings(exports)
     exports.init_game()
-    exports.render()
 
-    // @TODO : make requestAnimationFrame loop
+    var currentTimestamp = new Date()
+    const update = () => {
+      window.requestAnimationFrame(update)
+
+      const oldTimestamp = currentTimestamp
+      currentTimestamp = new Date()
+
+      exports.update_state((currentTimestamp - oldTimestamp) / 1000)
+      exports.render()
+    }
+    window.requestAnimationFrame(update);
   })
 
 const runGame = () => {
