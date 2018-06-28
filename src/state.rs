@@ -1,14 +1,19 @@
 pub struct State {
-    width: u16,
-    height: u16,
-    score: u16,
-    player: PlayerState
+    pub width: u16,
+    pub height: u16,
+    pub score: u16,
+    pub player: PlayerState,
+    pub moving_up: bool,
+    pub moving_down: bool,
+    pub moving_right: bool,
+    pub moving_left: bool,
+    pub shooting: bool
 }
 
-struct PlayerState {
-    x: u16,
-    y: u16,
-    life: u8
+pub struct PlayerState {
+    pub x: u16,
+    pub y: u16,
+    pub life: u8
 }
 
 impl State {
@@ -17,7 +22,12 @@ impl State {
             width,
             height,
             score: 0,
-            player: PlayerState::new(width, height)
+            player: PlayerState::new(width, height),
+            moving_up: false,
+            moving_down: false,
+            moving_right: false,
+            moving_left: false,
+            shooting: false
         }
     }
 }

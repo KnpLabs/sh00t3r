@@ -11,5 +11,7 @@ html, body {
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 100%;
+  width: 800px;
+  height: 600px;
+  margin: 0 auto;
 }
