@@ -30,6 +30,31 @@ pub extern fn init_game() {
 }
 
 #[no_mangle]
+pub extern fn toggle_move_up() {
+    // to be implemented
+}
+
+#[no_mangle]
+pub extern fn toggle_move_down() {
+    // to be implemented
+}
+
+#[no_mangle]
+pub extern fn toggle_move_left() {
+    // to be implemented
+}
+
+#[no_mangle]
+pub extern fn toggle_move_right() {
+    // to be implemented
+}
+
+#[no_mangle]
+pub extern fn toggle_shoot() {
+    // to be implemented
+}
+
+#[no_mangle]
 pub unsafe extern fn render() {
     clear_stage();
 }
