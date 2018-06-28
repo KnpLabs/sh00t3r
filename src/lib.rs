@@ -13,7 +13,7 @@ lazy_static! {
 }
 
 // unit: pixels/seconds
-static PLAYER_VELOCITY: f32 = 200.0;
+static PLAYER_VELOCITY: u16 = 200;
 
 // import functions from JS
 extern {
@@ -26,7 +26,7 @@ fn build_initial_state(width: u16, height: u16) -> State {
 }
 
 fn move_player(state: &mut State, elapsed_time: f32) {
-    let delta_m: u16 = (PLAYER_VELOCITY * elapsed_time) as u16;
+    let delta_m: u16 = (PLAYER_VELOCITY as f32 * elapsed_time) as u16;
 
     // todo : add checks when colliding on the world edges
     if state.moving_right {
@@ -77,7 +77,7 @@ pub extern fn toggle_move_down(enabled: u16) {
 pub extern fn toggle_move_left(enabled: u16) {
     let state = &mut STATE.lock().unwrap();
 
-    state.moving_left= enabled != 0
+    state.moving_left = enabled != 0
 }
 
 #[no_mangle]
