@@ -1,11 +1,10 @@
 #[macro_use]
 extern crate lazy_static;
 
-use std::sync::Mutex;
+mod state;
 
-struct State {
-    // game: Game,
-}
+use std::sync::Mutex;
+use self::state::State;
 
 // Lazy static access to the STATE var.
 // Use Mutex as JS is single threaded (and rust is not)
@@ -19,9 +18,7 @@ extern {
 }
 
 fn build_initial_state(width: u16, height: u16) -> State {
-    State {
-        // game: build_game
-    }
+    State::new(width, height)
 }
 
 #[no_mangle]
