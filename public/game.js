@@ -116,7 +116,7 @@ const loadWasm = imports => fetch('./sh00t3r.gc.wasm')
     window.requestAnimationFrame(update);
   })
 
-const runGame = () => {
+const runGame = (shooter) => {
   const ctx = document.getElementById('canvas').getContext('2d')
   ctx.fillStyle = 'black'
 
@@ -125,8 +125,16 @@ const runGame = () => {
 
   const resources = buildResources()
   const imports = buildImports(ctx, resources)
+  bindImports(imports)
 
-  loadWasm(imports)
+  shooter.init_game();
+  shooter.render();
 }
 
-runGame()
+const bindImports = (imports) =>
+  Object
+  .entries(imports)
+  .forEach(([name, fn]) => window[name] = fn)
+
+const shooter = import('./sh00t3r')
+shooter.then(runGame)
