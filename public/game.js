@@ -9,6 +9,9 @@ const drawObject = (ctx, resource, dx, dy) =>
 const drawPlayer = (ctx, resources) => (dx, dy) =>
   drawObject(ctx, resources.player, dx, dy)
 
+const drawBullet = (ctx, resources) => (dx, dy) =>
+  drawObject(ctx, resources.bullet, dx, dy)
+
 const createContext = (w, h) => {
   const canvas = document.createElement('canvas');
   canvas.width = w;
@@ -63,7 +66,8 @@ const buildResources = () => ({
 // the functions to import into the wasm
 const buildImports = (ctx, resources) => ({
   clear_stage: buildClearStage(ctx),
-  draw_player: drawPlayer(ctx, resources)
+  draw_player: drawPlayer(ctx, resources),
+  draw_bullet: drawBullet(ctx, resources)
 })
 
 const buildKeyBindings = exports => {
