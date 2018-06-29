@@ -32,7 +32,8 @@ static BULLET_VELOCITY: u16 = 500;
 static LIFEPACK_VELOCITY: u16 = 140;
 
 // unit: bullets/seconds
-static BULLET_FIRERATE: u16 = 3;
+static PLAYER_BULLET_FIRERATE: u16 = 4;
+static ENEMY_BULLET_FIRERATE: u16 = 2;
 
 macro_rules! println {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
@@ -101,13 +102,25 @@ fn move_lifepacks(state: &mut State, elapsed_time: f32) {
 }
 
 fn shoot_bullet(state: &mut State, elapsed_time: f32) {
-    let shooting_frame = 1.0 / BULLET_FIRERATE as f32;
+    let player_shooting_frame = 1.0 / PLAYER_BULLET_FIRERATE as f32;
+    let enemy_shooting_frame = 1.0 / ENEMY_BULLET_FIRERATE as f32;
 
     state.last_shoot_elapsed += elapsed_time;
 
-    if state.shooting && state.last_shoot_elapsed > shooting_frame {
+    if state.shooting && state.last_shoot_elapsed > player_shooting_frame {
         state.bullets.push(BulletState::from_player(&state.player));
         state.last_shoot_elapsed = 0.0;
+    }
+
+    for enemy in state.enemies.iter_mut() {
+        if enemy.shooting {
+            enemy.last_shoot_elapsed += elapsed_time;
+
+            if state.last_shoot_elapsed > enemy_shooting_frame {
+                state.bullets.push(BulletState::from_enemy(enemy));
+                enemy.last_shoot_elapsed = 0.0;
+            }
+        }
     }
 }
 
@@ -197,7 +210,7 @@ pub extern fn render() -> bool {
     draw_player(state.player.x, state.player.y);
 
     for enemy in state.enemies.iter() {
-        draw_enemy(enemy.x, enemy.y);
+        draw_enemy(enemy.x, enemy.y, enemy.radius);
     }
 
     // bullets

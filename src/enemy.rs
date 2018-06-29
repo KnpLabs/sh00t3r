@@ -1,9 +1,6 @@
 use super::externs::rand;
 use state::EnemyState;
 
-// unit: pixels/seconds
-static ENEMY_VELOCITY: u16 = 300;
-
 pub fn generate_enemy (stage_width: u16) -> Option<EnemyState> {
     let birth_chance: u16 = (rand() * 100.0) as u16;
 
@@ -12,14 +9,17 @@ pub fn generate_enemy (stage_width: u16) -> Option<EnemyState> {
     }
 
     let x: u16 = (rand() * stage_width as f64) as u16;
-    Some(EnemyState::new(x, 0))
+
+    match (rand() * 100.0) as u16 {
+        0...70 => Some(EnemyState::create_light(x, 0)),
+        71...95 => Some(EnemyState::create_medium(x, 0)),
+        _ => Some(EnemyState::create_heavy(x, 0))
+    }
 }
 
 pub fn move_enemies (enemies: &mut Vec<EnemyState>, elapsed_time: f32, stage_width: u16, stage_height: u16) {
-    let delta: u16 = (ENEMY_VELOCITY as f32 * elapsed_time) as u16;
-
     for enemy in enemies.iter_mut() {
-        enemy.y += delta;
+        enemy.y += (enemy.velocity as f32 * elapsed_time) as u16;
 
         let shift_chance: u16 = (rand() * 100.0) as u16;
         if shift_chance < 25 {
