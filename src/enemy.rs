@@ -19,7 +19,8 @@ pub fn generate_enemy (stage_width: u16) -> Option<EnemyState> {
 
 pub fn move_enemies (enemies: &mut Vec<EnemyState>, elapsed_time: f32, stage_width: u16, stage_height: u16) {
     for enemy in enemies.iter_mut() {
-        enemy.y += (enemy.velocity as f32 * elapsed_time) as u16;
+        let delta = (enemy.velocity as f32 * elapsed_time) as u16;
+        enemy.y += delta;
 
         let shift_chance: u16 = (rand() * 100.0) as u16;
         if shift_chance < 25 {
