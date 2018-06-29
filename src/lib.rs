@@ -8,6 +8,7 @@ mod state;
 mod enemy;
 mod lifepack;
 pub mod externs;
+mod collisions;
 
 use std::cmp;
 use std::sync::Mutex;
@@ -19,6 +20,7 @@ use self::enemy::{generate_enemy, move_enemies};
 use self::lifepack::generate_lifepack;
 
 use self::externs::*;
+use self::collisions::handle_collisions;
 
 // Lazy static access to the STATE var.
 // Use Mutex as JS is single threaded (and rust is not)
@@ -27,7 +29,7 @@ lazy_static! {
 }
 
 // unit: pixels/seconds
-static PLAYER_VELOCITY: u16 = 200;
+static PLAYER_VELOCITY: u16 = 400;
 static BULLET_VELOCITY: u16 = 500;
 static LIFEPACK_VELOCITY: u16 = 140;
 
@@ -125,10 +127,25 @@ fn shoot_bullet(state: &mut State, elapsed_time: f32) {
 }
 
 #[wasm_bindgen]
-pub extern fn update_state(elapsed_time: f32) {
+pub extern fn update_state (
+    elapsed_time: f32,
+    moving_up: u16,
+    moving_down: u16,
+    moving_left: u16,
+    moving_right: u16,
+    shooting: u16
+) {
     let state = &mut STATE.lock().unwrap();
     let stage_width: u16 = state.width;
     let stage_height: u16 = state.height;
+
+    handle_collisions(state);
+
+    state.moving_up = moving_up != 0;
+    state.moving_down = moving_down != 0;
+    state.moving_left = moving_left != 0;
+    state.moving_right = moving_right != 0;
+    state.shooting = shooting != 0;
 
     move_player(state, elapsed_time);
     move_bullets(state, elapsed_time);
@@ -151,41 +168,6 @@ pub extern fn update_state(elapsed_time: f32) {
 #[wasm_bindgen]
 pub extern fn init_game() {
     let state: &mut State = &mut STATE.lock().unwrap();
-}
-
-#[wasm_bindgen]
-pub extern fn toggle_move_up(enabled: u16) {
-    let state = &mut STATE.lock().unwrap();
-
-    state.moving_up = enabled != 0
-}
-
-#[wasm_bindgen]
-pub extern fn toggle_move_down(enabled: u16) {
-    let state = &mut STATE.lock().unwrap();
-
-    state.moving_down = enabled != 0
-}
-
-#[wasm_bindgen]
-pub extern fn toggle_move_left(enabled: u16) {
-    let state = &mut STATE.lock().unwrap();
-
-    state.moving_left = enabled != 0
-}
-
-#[wasm_bindgen]
-pub extern fn toggle_move_right(enabled: u16) {
-    let state = &mut STATE.lock().unwrap();
-
-    state.moving_right = enabled != 0
-}
-
-#[wasm_bindgen]
-pub extern fn toggle_shoot(enabled: u16) {
-    let state = &mut STATE.lock().unwrap();
-
-    state.shooting = enabled != 0
 }
 
 #[wasm_bindgen]

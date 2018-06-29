@@ -8,8 +8,8 @@ const buildClearStage = ctx => () => {
 }
 
 const centerPosToTopLeft = (x, y, resource) => [
-  x - resource.width / 2,
-  y - resource.height / 2,
+  x - Math.floor(resource.width / 2),
+  y - Math.floor(resource.height / 2),
 ]
 
 const drawCanvas = (ctx, resource, dx, dy) => {
@@ -129,23 +129,31 @@ const drawGameOver = curry((ctx, score) => {
   ctx.drawImage(screen.canvas, 0, 220)
 })
 
+let keys = {
+  movingUp: false,
+  movingDown: false,
+  movingLeft: false,
+  movingRight: false,
+  shooting: false
+};
+
 const buildKeyBindings = exports => {
   const handleKey = (key, enabled) => {
     switch (key) {
       case 'ArrowUp':
-        exports.toggle_move_up(enabled)
+        keys.movingUp = enabled
         break
       case 'ArrowDown':
-        exports.toggle_move_down(enabled)
+        keys.movingDown = enabled
         break
       case 'ArrowLeft':
-        exports.toggle_move_left(enabled)
+        keys.movingLeft = enabled
         break
       case 'ArrowRight':
-        exports.toggle_move_right(enabled)
+        keys.movingRight = enabled
         break
       case ' ':
-        exports.toggle_shoot(enabled)
+        keys.shooting = enabled
         break
       default:
         break
@@ -182,7 +190,14 @@ const runGame = (shooter) => {
       : 1000 / MAX_FRAMERATE
 
     setTimeout(() => {
-      shooter.update_state(timeDelta / 1000)
+      shooter.update_state(
+        timeDelta / 1000,
+        keys.movingUp,
+        keys.movingDown,
+        keys.movingLeft,
+        keys.movingRight,
+        keys.shooting
+      )
 
       if (shooter.render()) {
         window.requestAnimationFrame(update)
