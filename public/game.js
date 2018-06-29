@@ -12,6 +12,9 @@ const drawPlayer = (ctx, resources) => (dx, dy) =>
 const drawBullet = (ctx, resources) => (dx, dy) =>
   drawObject(ctx, resources.bullet, dx, dy)
 
+const drawEnemy = (ctx, resources) => (dx, dy) =>
+  drawObject(ctx, resources.enemy, dx, dy)
+
 const createContext = (w, h) => {
   const canvas = document.createElement('canvas');
   canvas.width = w;
@@ -59,7 +62,7 @@ const buildBullet = () => {
 const buildResources = () => ({
   player: buildPlayer(),
   enemy: buildEnemy(),
-  bullet: buildBullet()
+  bullet: buildBullet(),
 })
 
 // buildImports :: CanvasRenderingContext2D -> Object
@@ -67,7 +70,9 @@ const buildResources = () => ({
 const buildImports = (ctx, resources) => ({
   clear_stage: buildClearStage(ctx),
   draw_player: drawPlayer(ctx, resources),
-  draw_bullet: drawBullet(ctx, resources)
+  draw_bullet: drawBullet(ctx, resources),
+  draw_enemy: drawEnemy(ctx, resources),
+  rand: Math.random,
 })
 
 const buildKeyBindings = exports => {

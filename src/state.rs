@@ -1,10 +1,10 @@
-
 pub struct State {
     pub width: u16,
     pub height: u16,
     pub score: u16,
     pub player: PlayerState,
     pub bullets: Vec<BulletState>,
+    pub enemies: Vec<EnemyState>,
     pub moving_up: bool,
     pub moving_down: bool,
     pub moving_right: bool,
@@ -26,6 +26,11 @@ pub struct BulletState {
     pub owned_by_player: bool
 }
 
+pub struct EnemyState {
+    pub x: u16,
+    pub y: u16,
+}
+
 impl State {
     pub fn new (width: u16, height: u16) -> State {
         State {
@@ -34,6 +39,7 @@ impl State {
             score: 0,
             player: PlayerState::new(width, height),
             bullets: Vec::new(),
+            enemies: vec![],
             moving_up: false,
             moving_down: false,
             moving_right: false,
@@ -66,5 +72,14 @@ impl BulletState {
 
     pub fn from_player (player_state: &PlayerState) -> BulletState {
         BulletState::new(player_state.x, player_state.y - 13, true, true)
+    }
+}
+
+impl EnemyState {
+    pub fn new (x: u16, y: u16) -> EnemyState {
+        EnemyState {
+            x,
+            y
+        }
     }
 }
