@@ -114,12 +114,13 @@ fn shoot_bullet(state: &mut State, elapsed_time: f32) {
 #[wasm_bindgen]
 pub extern fn update_state(elapsed_time: f32) {
     let state = &mut STATE.lock().unwrap();
+    let stage_width: u16 = state.width;
     let stage_height: u16 = state.height;
 
     move_player(state, elapsed_time);
     move_bullets(state, elapsed_time);
     move_lifepacks(state, elapsed_time);
-    move_enemies(&mut state.enemies, elapsed_time, stage_height);
+    move_enemies(&mut state.enemies, elapsed_time, stage_width, stage_height);
 
     shoot_bullet(state, elapsed_time);
 
