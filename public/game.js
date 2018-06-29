@@ -70,7 +70,7 @@ const buildBullet = () => {
 const buildLifepack = () => {
     const ctx = createContext(10, 10)
 
-    ctx.fillStyle = 'cyan';
+    ctx.fillStyle = 'blue';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
     return ctx

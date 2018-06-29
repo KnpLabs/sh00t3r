@@ -6,14 +6,18 @@ extern crate wasm_bindgen;
 
 mod state;
 mod enemy;
+mod lifepack;
 pub mod externs;
 
 use std::cmp;
 use std::sync::Mutex;
+use wasm_bindgen::prelude::*;
+
 use self::state::State;
 use self::state::BulletState;
-use wasm_bindgen::prelude::*;
 use self::enemy::{generate_enemy, move_enemies};
+use self::lifepack::generate_lifepack;
+
 use self::externs::*;
 
 // Lazy static access to the STATE var.
@@ -110,10 +114,12 @@ fn shoot_bullet(state: &mut State, elapsed_time: f32) {
 #[wasm_bindgen]
 pub extern fn update_state(elapsed_time: f32) {
     let state = &mut STATE.lock().unwrap();
+    let stage_height: u16 = state.height;
 
     move_player(state, elapsed_time);
     move_bullets(state, elapsed_time);
     move_lifepacks(state, elapsed_time);
+    move_enemies(&mut state.enemies, elapsed_time, stage_height);
 
     shoot_bullet(state, elapsed_time);
 
@@ -121,9 +127,10 @@ pub extern fn update_state(elapsed_time: f32) {
         Some(x) => state.enemies.push(x),
         None => {},
     }
-
-    let stage_height: u16 = state.height;
-    move_enemies(&mut state.enemies, elapsed_time, stage_height);
+    match generate_lifepack(state) {
+        Some(x) => state.lifepacks.push(x),
+        None => {}
+    }
 }
 
 #[wasm_bindgen]
@@ -184,6 +191,11 @@ pub extern fn render() {
     // bullets
     for bullet in state.bullets.iter() {
         draw_bullet(bullet.x, bullet.y);
+    }
+
+    // lifepacks
+    for lifepack in state.lifepacks.iter() {
+        draw_lifepack(lifepack.x, lifepack.y);
     }
 
     // score
