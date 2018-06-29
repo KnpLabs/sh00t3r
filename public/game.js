@@ -82,7 +82,6 @@ const buildResources = () => ({
   player: buildPlayer(),
   enemy: buildEnemy(),
   bullet: buildBullet(),
-  hud: buildHud(),
   lifepack: buildLifepack()
 })
 
@@ -120,7 +119,7 @@ const buildHud = () => {
 }
 
 const drawHud = curry((ctx, resources, remainingLifes, currentScore) => {
-  const {life: lifeComponent, score: scoreComponent} = resources.hud
+  const {life: lifeComponent, score: scoreComponent} = buildHud()
 
   scoreComponent.fillText(`Score ${currentScore}`, 20, 20)
   ctx.drawImage(scoreComponent.canvas, 0, 0)
