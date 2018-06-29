@@ -118,8 +118,8 @@ const runGame = (shooter) => {
     const oldTimestamp = currentTimestamp
     currentTimestamp = new Date()
 
-    exports.update_state((currentTimestamp - oldTimestamp) / 1000)
-    exports.render()
+    shooter.update_state((currentTimestamp - oldTimestamp) / 1000)
+    shooter.render()
   }
 
   window.requestAnimationFrame(update);
