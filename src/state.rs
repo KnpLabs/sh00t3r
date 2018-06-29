@@ -5,6 +5,7 @@ pub struct State {
     pub player: PlayerState,
     pub bullets: Vec<BulletState>,
     pub enemies: Vec<EnemyState>,
+    pub lifepacks: Vec<LifepackState>,
     pub moving_up: bool,
     pub moving_down: bool,
     pub moving_right: bool,
@@ -28,7 +29,13 @@ pub struct BulletState {
 
 pub struct EnemyState {
     pub x: u16,
+    pub y: u16
+}
+
+pub struct LifepackState {
+    pub x: u16,
     pub y: u16,
+    pub life_unit: u8
 }
 
 impl State {
@@ -40,6 +47,7 @@ impl State {
             player: PlayerState::new(width, height),
             bullets: Vec::new(),
             enemies: vec![],
+            lifepacks: Vec::new(),
             moving_up: false,
             moving_down: false,
             moving_right: false,
@@ -81,5 +89,11 @@ impl EnemyState {
             x,
             y
         }
+    }
+}
+
+impl LifepackState {
+    pub fn new (x: u16, y: u16) -> LifepackState {
+        LifepackState {x, y, life_unit: 1}
     }
 }

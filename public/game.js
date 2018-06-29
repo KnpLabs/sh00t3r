@@ -19,6 +19,10 @@ const drawBullet = (ctx, resources) => (dx, dy) =>
 const drawEnemy = (ctx, resources) => (dx, dy) =>
   drawObject(ctx, resources.enemy, dx, dy)
 
+const drawLifepack = (ctx, resources) => (dx, dy) =>
+  drawObject(ctx, resources.lifepack, dx, dy)
+
+
 const createContext = (w, h) => {
   const canvas = document.createElement('canvas');
   canvas.width = w;
@@ -63,11 +67,21 @@ const buildBullet = () => {
     return ctx
 }
 
+const buildLifepack = () => {
+    const ctx = createContext(10, 10)
+
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+
+    return ctx
+}
+
 const buildResources = () => ({
   player: buildPlayer(),
   enemy: buildEnemy(),
   bullet: buildBullet(),
   hud: buildHud(),
+  lifepack: buildLifepack()
 })
 
 // buildImports :: CanvasRenderingContext2D -> Object
@@ -77,8 +91,9 @@ const buildImports = (ctx, resources) => ({
   draw_player: drawPlayer(ctx, resources),
   draw_bullet: drawBullet(ctx, resources),
   draw_enemy: drawEnemy(ctx, resources),
-  rand: Math.random,
   draw_hud: drawHud(ctx)(resources),
+  draw_lifepack: drawLifepack(ctx, resources),
+  rand: Math.random
 })
 
 const createTextContext = (width) => (height) => (align) => {

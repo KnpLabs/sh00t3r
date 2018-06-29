@@ -6,14 +6,18 @@ extern crate wasm_bindgen;
 
 mod state;
 mod enemy;
+mod lifepack;
 pub mod externs;
 
 use std::cmp;
 use std::sync::Mutex;
+use wasm_bindgen::prelude::*;
+
 use self::state::State;
 use self::state::BulletState;
-use wasm_bindgen::prelude::*;
 use self::enemy::{generate_enemy, move_enemies};
+use self::lifepack::generate_lifepack;
+
 use self::externs::*;
 
 // Lazy static access to the STATE var.
@@ -25,6 +29,7 @@ lazy_static! {
 // unit: pixels/seconds
 static PLAYER_VELOCITY: u16 = 200;
 static BULLET_VELOCITY: u16 = 500;
+static LIFEPACK_VELOCITY: u16 = 140;
 
 // unit: bullets/seconds
 static BULLET_FIRERATE: u16 = 3;
@@ -80,6 +85,21 @@ fn move_bullets(state: &mut State, elapsed_time: f32) {
     });
 }
 
+fn move_lifepacks(state: &mut State, elapsed_time: f32) {
+    let delta_m: u16 = (LIFEPACK_VELOCITY as f32 * elapsed_time) as u16;
+
+    for lifepack in state.lifepacks.iter_mut() {
+        lifepack.y += delta_m;
+    }
+
+    let height = state.height;
+
+    // remove lifepacks that goes off the screen
+    state.lifepacks.retain(|lifepack| {
+        lifepack.y < height
+    });
+}
+
 fn shoot_bullet(state: &mut State, elapsed_time: f32) {
     let shooting_frame = 1.0 / BULLET_FIRERATE as f32;
 
@@ -94,9 +114,12 @@ fn shoot_bullet(state: &mut State, elapsed_time: f32) {
 #[wasm_bindgen]
 pub extern fn update_state(elapsed_time: f32) {
     let state = &mut STATE.lock().unwrap();
+    let stage_height: u16 = state.height;
 
     move_player(state, elapsed_time);
     move_bullets(state, elapsed_time);
+    move_lifepacks(state, elapsed_time);
+    move_enemies(&mut state.enemies, elapsed_time, stage_height);
 
     shoot_bullet(state, elapsed_time);
 
@@ -104,9 +127,10 @@ pub extern fn update_state(elapsed_time: f32) {
         Some(x) => state.enemies.push(x),
         None => {},
     }
-
-    let stage_height: u16 = state.height;
-    move_enemies(&mut state.enemies, elapsed_time, stage_height);
+    match generate_lifepack(state) {
+        Some(x) => state.lifepacks.push(x),
+        None => {}
+    }
 }
 
 #[wasm_bindgen]
@@ -167,6 +191,11 @@ pub extern fn render() {
     // bullets
     for bullet in state.bullets.iter() {
         draw_bullet(bullet.x, bullet.y);
+    }
+
+    // lifepacks
+    for lifepack in state.lifepacks.iter() {
+        draw_lifepack(lifepack.x, lifepack.y);
     }
 
     // score
