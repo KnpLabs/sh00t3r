@@ -127,10 +127,15 @@ pub extern fn update_state(elapsed_time: f32) {
         Some(x) => state.enemies.push(x),
         None => {},
     }
+
     match generate_lifepack(state) {
         Some(x) => state.lifepacks.push(x),
         None => {}
     }
+
+    let stage_width: u16 = state.width;
+    let stage_height: u16 = state.height;
+    move_enemies(&mut state.enemies, elapsed_time, stage_width, stage_height);
 }
 
 #[wasm_bindgen]
