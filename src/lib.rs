@@ -13,7 +13,7 @@ use std::sync::Mutex;
 use self::state::State;
 use self::state::BulletState;
 use wasm_bindgen::prelude::*;
-use self::enemy::generate_enemy;
+use self::enemy::{generate_enemy, move_enemies};
 use self::externs::*;
 
 // Lazy static access to the STATE var.
@@ -104,6 +104,9 @@ pub extern fn update_state(elapsed_time: f32) {
         Some(x) => state.enemies.push(x),
         None => {},
     }
+
+    let stage_height: u16 = state.height;
+    move_enemies(&mut state.enemies, elapsed_time, stage_height);
 }
 
 #[wasm_bindgen]
