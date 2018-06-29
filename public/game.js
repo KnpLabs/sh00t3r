@@ -1,5 +1,9 @@
-const buildClearStage = ctx => () =>
+import curry from 'lodash.curry'
+
+const buildClearStage = ctx => () => {
+  // ctx.fillStyle = 'grey'
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+}
 
 const centerPosToTopLeft = (x, resource) => x - resource.canvas.width / 2
 
@@ -63,6 +67,7 @@ const buildResources = () => ({
   player: buildPlayer(),
   enemy: buildEnemy(),
   bullet: buildBullet(),
+  hud: buildHud(),
 })
 
 // buildImports :: CanvasRenderingContext2D -> Object
@@ -73,6 +78,32 @@ const buildImports = (ctx, resources) => ({
   draw_bullet: drawBullet(ctx, resources),
   draw_enemy: drawEnemy(ctx, resources),
   rand: Math.random,
+  draw_hud: drawHud(ctx)(resources),
+})
+
+const createTextContext = (width) => (height) => (align) => {
+  const context = createContext(width, height)
+  context.font = '18pt Calibri'
+  context.fillStyle = 'blue'
+  context.textAlign = align
+  return context
+}
+
+const buildHud = () => {
+  return {
+    life: createTextContext(800)(100)('right'),
+    score: createTextContext(800)(100)('left')
+  }
+}
+
+const drawHud = curry((ctx, resources, remainingLifes, currentScore) => {
+  const {life: lifeComponent, score: scoreComponent} = resources.hud
+
+  lifeComponent.fillText(`Lifes: ${remainingLifes}`, 700, 50)
+  ctx.drawImage(lifeComponent.canvas, 0, 500)
+
+  scoreComponent.fillText(`Score ${currentScore}`, 20, 50)
+  ctx.drawImage(scoreComponent.canvas, 0, 0)
 })
 
 const buildKeyBindings = exports => {

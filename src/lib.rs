@@ -171,5 +171,5 @@ pub extern fn render() {
 
     // score
 
-    // hud
+    draw_hud(state.player.life, state.score);
 }
