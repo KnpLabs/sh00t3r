@@ -63,7 +63,7 @@ impl PlayerState {
         PlayerState {
             x: width / 2,
             y: height - 100,
-            life: 1
+            life: 5
         }
     }
 }
