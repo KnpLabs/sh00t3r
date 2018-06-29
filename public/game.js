@@ -95,32 +95,46 @@ const buildImports = (ctx, resources) => ({
   draw_enemy: drawEnemy(ctx, resources),
   draw_hud: drawHud(ctx)(resources),
   draw_lifepack: drawLifepack(ctx, resources),
+  draw_game_over: drawGameOver(ctx),
   rand: Math.random
 })
 
-const createTextContext = (width) => (height) => (align) => {
+const createTextContext = curry((width, height, font, color, align) => {
   const context = createContext(width, height)
-  context.font = '18pt Calibri'
-  context.fillStyle = 'blue'
+  context.font = font
+  context.fillStyle = color
   context.textAlign = align
+  context.textBaseline = 'top'
   return context
-}
+})
+
+const createHudContext = curry((width, height, align) =>
+  createTextContext(width, height, '18pt Calibri', 'blue', align)
+)
 
 const buildHud = () => {
   return {
-    life: createTextContext(800)(100)('right'),
-    score: createTextContext(800)(100)('left')
+    life: createHudContext(800, 100, 'right'),
+    score: createHudContext(800, 100, 'left'),
   }
 }
 
 const drawHud = curry((ctx, resources, remainingLifes, currentScore) => {
   const {life: lifeComponent, score: scoreComponent} = resources.hud
 
-  lifeComponent.fillText(`Lifes: ${remainingLifes}`, 700, 50)
-  ctx.drawImage(lifeComponent.canvas, 0, 500)
-
-  scoreComponent.fillText(`Score ${currentScore}`, 20, 50)
+  scoreComponent.fillText(`Score ${currentScore}`, 20, 20)
   ctx.drawImage(scoreComponent.canvas, 0, 0)
+
+  lifeComponent.fillText(`Lifes: ${remainingLifes}`, 750, 50)
+  ctx.drawImage(lifeComponent.canvas, 0, 500)
+})
+
+const drawGameOver = curry((ctx, score) => {
+  const screen = createTextContext(800, 600, '32pt Calibri', 'orange', 'center')
+  screen.fillText('GAME OVER!', 400, 0)
+  screen.fillText(`Your score: ${score}`, 400, 60)
+
+  ctx.drawImage(screen.canvas, 0, 220)
 })
 
 const buildKeyBindings = exports => {
@@ -177,9 +191,10 @@ const runGame = (shooter) => {
 
     setTimeout(() => {
       shooter.update_state(timeDelta / 1000)
-      shooter.render()
 
-      window.requestAnimationFrame(update)
+      if (shooter.render()) {
+        window.requestAnimationFrame(update)
+      }
     }, delay)
   }
 
