@@ -176,19 +176,29 @@ pub extern fn toggle_shoot(enabled: u16) {
 }
 
 #[wasm_bindgen]
-pub extern fn render() {
+pub extern fn hurt_player() {
+    let state = &mut STATE.lock().unwrap();
+
+    state.player.life = state.player.life - 1;
+}
+
+#[wasm_bindgen]
+pub extern fn render() -> bool {
     clear_stage();
     println!("Rendering next frame...");
 
     let state = &mut STATE.lock().unwrap();
+
+    if state.player.life <= 0 {
+        draw_game_over(state.score);
+        return false;
+    }
 
     draw_player(state.player.x, state.player.y);
 
     for enemy in state.enemies.iter() {
         draw_enemy(enemy.x, enemy.y);
     }
-
-    // enemies
 
     // bullets
     for bullet in state.bullets.iter() {
@@ -200,7 +210,7 @@ pub extern fn render() {
         draw_lifepack(lifepack.x, lifepack.y);
     }
 
-    // score
-
     draw_hud(state.player.life, state.score);
+
+    return true;
 }
