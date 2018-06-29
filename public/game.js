@@ -3,7 +3,7 @@ import curry from 'lodash.curry'
 const MAX_FRAMERATE = 50
 
 const buildClearStage = ctx => () => {
-  // ctx.fillStyle = 'grey'
+  ctx.fillStyle = '#030303'
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 }
 
@@ -18,8 +18,9 @@ const drawPlayer = (ctx, resources) => (dx, dy) =>
 const drawBullet = (ctx, resources) => (dx, dy) =>
   drawObject(ctx, resources.bullet, dx, dy)
 
-const drawEnemy = (ctx, resources) => (dx, dy) =>
-  drawObject(ctx, resources.enemy, dx, dy)
+const drawEnemy = (ctx, resources) => (dx, dy, radius) => {
+  drawObject(ctx, resources.enemy['type' + radius], dx, dy)
+}
 
 const drawLifepack = (ctx, resources) => (dx, dy) =>
   drawObject(ctx, resources.lifepack, dx, dy)
@@ -44,20 +45,26 @@ const buildPlayer = () => {
 }
 
 const buildEnemy = () => {
-   const ctx = createContext(20, 20)
+  let enemies = {}
 
-   ctx.fillStyle = 'red';
-   ctx.beginPath();
-   ctx.arc(
+  for (let radius = 10 ; radius <= 30 ; radius += 10) {
+    const ctx = createContext(radius * 2, radius * 2)
+
+    ctx.fillStyle = '#ff00' + (radius * 3);
+    ctx.beginPath();
+    ctx.arc(
      ctx.canvas.width / 2,
      ctx.canvas.height / 2,
-     ctx.canvas.width / 2,
+     radius,
      0,
      2 * Math.PI
-   );
-   ctx.fill();
+    );
+    ctx.fill();
 
-   return ctx
+    enemies['type' + radius] = ctx
+  }
+
+  return enemies
 }
 
 const buildBullet = () => {

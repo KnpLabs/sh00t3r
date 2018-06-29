@@ -29,7 +29,11 @@ pub struct BulletState {
 
 pub struct EnemyState {
     pub x: u16,
-    pub y: u16
+    pub y: u16,
+    pub radius: u8,
+    pub shooting: bool,
+    pub velocity: u16,
+    pub last_shoot_elapsed: f32
 }
 
 pub struct LifepackState {
@@ -81,14 +85,34 @@ impl BulletState {
     pub fn from_player (player_state: &PlayerState) -> BulletState {
         BulletState::new(player_state.x, player_state.y - 13, true, true)
     }
+
+    pub fn from_enemy (enemy_state: &EnemyState) -> BulletState {
+        BulletState::new(enemy_state.x, enemy_state.y + enemy_state.radius as u16, false, false)
+    }
 }
 
 impl EnemyState {
-    pub fn new (x: u16, y: u16) -> EnemyState {
+    pub fn new (x: u16, y: u16, radius: u8, shooting: bool, velocity: u16) -> EnemyState {
         EnemyState {
             x,
-            y
+            y,
+            radius,
+            shooting,
+            velocity,
+            last_shoot_elapsed: 0.0
         }
+    }
+
+    pub fn create_light (x: u16, y: u16) -> EnemyState {
+        EnemyState::new(x, y, 10, false, 300)
+    }
+
+    pub fn create_medium (x: u16, y: u16) -> EnemyState {
+        EnemyState::new(x, y, 20, false, 200)
+    }
+
+    pub fn create_heavy (x: u16, y: u16) -> EnemyState {
+        EnemyState::new(x, y, 30, true, 150)
     }
 }
 
