@@ -1,5 +1,5 @@
 /.cargo
-/public/sh00t3r.*
+/public/sh00t3r*
 /target
 **/*.rs.bk
 /dist
