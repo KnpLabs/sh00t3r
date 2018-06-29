@@ -6,10 +6,11 @@ extern crate wasm_bindgen;
 
 mod state;
 
+use std::cmp;
 use std::sync::Mutex;
 use self::state::State;
-use wasm_bindgen::prelude::*;
 use self::state::BulletState;
+use wasm_bindgen::prelude::*;
 
 // Lazy static access to the STATE var.
 // Use Mutex as JS is single threaded (and rust is not)
@@ -36,7 +37,6 @@ extern {
 
 macro_rules! println {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-
 }
 
 fn build_initial_state(width: u16, height: u16) -> State {
@@ -46,7 +46,6 @@ fn build_initial_state(width: u16, height: u16) -> State {
 fn move_player(state: &mut State, elapsed_time: f32) {
     let delta_m: u16 = (PLAYER_VELOCITY as f32 * elapsed_time) as u16;
 
-    // todo : add checks when colliding on the world edges
     if state.moving_right {
         state.player.x = state.player.x + delta_m;
     }
@@ -62,6 +61,10 @@ fn move_player(state: &mut State, elapsed_time: f32) {
     if state.moving_down {
         state.player.y = state.player.y + delta_m;
     }
+
+    // constraints player position to world
+    state.player.x = cmp::max(10, cmp::min(state.width - 10, state.player.x));
+    state.player.y = cmp::max(10, cmp::min(state.height - 10, state.player.y));
 }
 
 fn move_bullets(state: &mut State, elapsed_time: f32) {
