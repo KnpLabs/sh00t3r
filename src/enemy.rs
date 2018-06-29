@@ -15,11 +15,21 @@ pub fn generate_enemy (stage_width: u16) -> Option<EnemyState> {
     Some(EnemyState::new(x, 0))
 }
 
-pub fn move_enemies (enemies: &mut Vec<EnemyState>, elapsed_time: f32, stage_height: u16) {
+pub fn move_enemies (enemies: &mut Vec<EnemyState>, elapsed_time: f32, stage_width: u16, stage_height: u16) {
     let delta: u16 = (ENEMY_VELOCITY as f32 * elapsed_time) as u16;
 
     for enemy in enemies.iter_mut() {
         enemy.y += delta;
+
+        let shift_chance: u16 = (rand() * 100.0) as u16;
+        if shift_chance < 25 {
+            let direction: bool = shift_chance % 2 == 0;
+            if direction && enemy.x + delta < stage_width {
+                enemy.x += delta;
+            } else if !direction && enemy.x - delta > 0 {
+                enemy.x -= delta;
+            }
+        }
     }
 
     // free memory for enemies that are off screen
