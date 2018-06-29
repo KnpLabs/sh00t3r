@@ -179,7 +179,6 @@ const runGame = (shooter) => {
 
   const resources = buildResources()
   const imports = buildImports(ctx, resources)
-  console.log(imports);
   bindImports(imports)
 
   shooter.init_game();
