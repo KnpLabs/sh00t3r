@@ -1,5 +1,7 @@
 import curry from 'lodash.curry'
 
+const MAX_FRAMERATE = 50
+
 const buildClearStage = ctx => () => {
   // ctx.fillStyle = 'grey'
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
@@ -164,13 +166,21 @@ const runGame = (shooter) => {
 
   var currentTimestamp = new Date()
   const update = () => {
-    window.requestAnimationFrame(update)
-
     const oldTimestamp = currentTimestamp
     currentTimestamp = new Date()
 
-    shooter.update_state((currentTimestamp - oldTimestamp) / 1000)
-    shooter.render()
+    const timeDelta = (currentTimestamp - oldTimestamp)
+    const framerate = parseInt(1000 / timeDelta)
+    const delay = framerate > MAX_FRAMERATE
+      ? 1000 / MAX_FRAMERATE * (framerate - MAX_FRAMERATE)
+      : 1000 / MAX_FRAMERATE
+
+    setTimeout(() => {
+      shooter.update_state(timeDelta / 1000)
+      shooter.render()
+
+      window.requestAnimationFrame(update)
+    }, delay)
   }
 
   window.requestAnimationFrame(update);
