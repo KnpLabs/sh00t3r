@@ -24,7 +24,8 @@ pub struct BulletState {
     pub x: u16,
     pub y: u16,
     pub going_up: bool,
-    pub owned_by_player: bool
+    pub owned_by_player: bool,
+    pub height: u8
 }
 
 pub struct EnemyState {
@@ -78,7 +79,8 @@ impl BulletState {
             x,
             y,
             going_up,
-            owned_by_player
+            owned_by_player,
+            height: 5
         }
     }
 
@@ -104,15 +106,15 @@ impl EnemyState {
     }
 
     pub fn create_light (x: u16, y: u16) -> EnemyState {
-        EnemyState::new(x, y, 10, false, 300)
+        EnemyState::new(x, y, 20, false, 300)
     }
 
     pub fn create_medium (x: u16, y: u16) -> EnemyState {
-        EnemyState::new(x, y, 20, false, 200)
+        EnemyState::new(x, y, 30, false, 200)
     }
 
     pub fn create_heavy (x: u16, y: u16) -> EnemyState {
-        EnemyState::new(x, y, 30, true, 150)
+        EnemyState::new(x, y, 40, true, 150)
     }
 }
 
