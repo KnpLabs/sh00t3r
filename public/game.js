@@ -7,23 +7,32 @@ const buildClearStage = ctx => () => {
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 }
 
-const centerPosToTopLeft = (x, resource) => x - resource.canvas.width / 2
+const centerPosToTopLeft = (x, y, resource) => [
+  x - resource.width / 2,
+  y - resource.height / 2,
+]
 
-const drawObject = (ctx, resource, dx, dy) =>
-  ctx.drawImage(resource.canvas, centerPosToTopLeft(dx, resource), centerPosToTopLeft(dy, resource))
+const drawCanvas = (ctx, resource, dx, dy) => {
+  const [x, y] = centerPosToTopLeft(dx, dy, resource.canvas)
+  ctx.drawImage(resource.canvas, x, y)
+}
 
-const drawPlayer = (ctx, resources) => (dx, dy) =>
-  drawObject(ctx, resources.player, dx, dy)
+const drawPlayer = (ctx, resources) => (dx, dy) => {
+  const [x, y] = centerPosToTopLeft(dx, dy, resources.player)
+  ctx.drawImage(resources.player, x, y)
+}
 
 const drawBullet = (ctx, resources) => (dx, dy) =>
-  drawObject(ctx, resources.bullet, dx, dy)
+  drawCanvas(ctx, resources.bullet, dx, dy)
 
 const drawEnemy = (ctx, resources) => (dx, dy, radius) => {
-  drawObject(ctx, resources.enemy['type' + radius], dx, dy)
+  const enemy = resources.enemy[`type${radius}`]
+  const [x, y] = centerPosToTopLeft(dx, dy, enemy)
+  ctx.drawImage(enemy, x, y)
 }
 
 const drawLifepack = (ctx, resources) => (dx, dy) =>
-  drawObject(ctx, resources.lifepack, dx, dy)
+  drawCanvas(ctx, resources.lifepack, dx, dy)
 
 
 const createContext = (w, h) => {
@@ -34,37 +43,14 @@ const createContext = (w, h) => {
   return canvas.getContext('2d');
 }
 
-const buildPlayer = () => {
-  // @FIXME : draw a nicer object for the player, or use a spacecraft image
-  const ctx = createContext(20, 20)
-
-  ctx.fillStyle = 'green'
-  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-
-  return ctx
-}
+const buildPlayer = () => document.getElementById('sprite-ship')
 
 const buildEnemy = () => {
-  let enemies = {}
-
-  for (let radius = 10 ; radius <= 30 ; radius += 10) {
-    const ctx = createContext(radius * 2, radius * 2)
-
-    ctx.fillStyle = '#ff00' + (radius * 3);
-    ctx.beginPath();
-    ctx.arc(
-     ctx.canvas.width / 2,
-     ctx.canvas.height / 2,
-     radius,
-     0,
-     2 * Math.PI
-    );
-    ctx.fill();
-
-    enemies['type' + radius] = ctx
+  return {
+    type10: document.getElementById('sprite-invader-a'),
+    type20: document.getElementById('sprite-invader-b'),
+    type30: document.getElementById('sprite-invader-c'),
   }
-
-  return enemies
 }
 
 const buildBullet = () => {
