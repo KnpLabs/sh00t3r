@@ -28,7 +28,8 @@ const drawBullet = (ctx, resources) => (dx, dy) =>
 const drawEnemy = (ctx, resources) => (dx, dy, radius) => {
   const enemy = resources.enemy[`type${radius}`]
   const [x, y] = centerPosToTopLeft(dx, dy, enemy)
-  ctx.drawImage(enemy, x, y)
+  const scale = radius / 20; // 20 as the 1 scale
+  ctx.drawImage(enemy, x, y, enemy.width * scale, enemy.height * scale)
 }
 
 const drawLifepack = (ctx, resources) => (dx, dy) =>
@@ -47,9 +48,9 @@ const buildPlayer = () => document.getElementById('sprite-ship')
 
 const buildEnemy = () => {
   return {
-    type10: document.getElementById('sprite-invader-a'),
-    type20: document.getElementById('sprite-invader-b'),
-    type30: document.getElementById('sprite-invader-c'),
+    type20: document.getElementById('sprite-invader-a'),
+    type30: document.getElementById('sprite-invader-b'),
+    type40: document.getElementById('sprite-invader-c'),
   }
 }
 

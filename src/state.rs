@@ -106,15 +106,15 @@ impl EnemyState {
     }
 
     pub fn create_light (x: u16, y: u16) -> EnemyState {
-        EnemyState::new(x, y, 10, false, 300)
+        EnemyState::new(x, y, 20, false, 300)
     }
 
     pub fn create_medium (x: u16, y: u16) -> EnemyState {
-        EnemyState::new(x, y, 20, false, 200)
+        EnemyState::new(x, y, 30, false, 200)
     }
 
     pub fn create_heavy (x: u16, y: u16) -> EnemyState {
-        EnemyState::new(x, y, 30, true, 150)
+        EnemyState::new(x, y, 40, true, 150)
     }
 }
 
