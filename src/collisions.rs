@@ -31,7 +31,7 @@ fn handle_bullet_collisions(state: &mut State) {
 }
 
 fn is_bullet_collision(enemy: & EnemyState, bullet: & BulletState) -> bool {
-    return distance(enemy.x, enemy.y, bullet.x, bullet.y) <= 30.0;
+    return distance(enemy.x, enemy.y, bullet.x, bullet.y) <= (enemy.radius * 2 + 10) as f64;
 }
 
 fn distance(x1: u16, y1: u16, x2: u16, y2: u16) -> f64 {

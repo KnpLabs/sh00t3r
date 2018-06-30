@@ -34,7 +34,7 @@ static BULLET_VELOCITY: u16 = 500;
 static LIFEPACK_VELOCITY: u16 = 140;
 
 // unit: bullets/seconds
-static PLAYER_BULLET_FIRERATE: u16 = 4;
+static PLAYER_BULLET_FIRERATE: u16 = 30;
 static ENEMY_BULLET_FIRERATE: u16 = 2;
 
 macro_rules! println {
