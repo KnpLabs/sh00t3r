@@ -24,7 +24,8 @@ pub struct BulletState {
     pub x: u16,
     pub y: u16,
     pub going_up: bool,
-    pub owned_by_player: bool
+    pub owned_by_player: bool,
+    pub height: u8
 }
 
 pub struct EnemyState {
@@ -78,7 +79,8 @@ impl BulletState {
             x,
             y,
             going_up,
-            owned_by_player
+            owned_by_player,
+            height: 5
         }
     }
 

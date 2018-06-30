@@ -1,14 +1,18 @@
 use super::state::{BulletState,EnemyState,State};
 
 pub fn handle_collisions(state: &mut State) {
-    handle_bullet_collisions(state);
+    handle_player_bullets_collisions(state);
 }
 
-fn handle_bullet_collisions(state: &mut State) {
+fn handle_player_bullets_collisions(state: &mut State) {
     let mut bullet_indexes: Vec<usize> = vec![];
     let mut enemy_indexes: Vec<usize> = vec![];
 
     for bullet_index in 0..state.bullets.len() {
+        if !state.bullets[bullet_index].owned_by_player {
+            continue;
+        }
+
         for enemy_index in 0..state.enemies.len() {
             if is_bullet_collision(&state.enemies[enemy_index], &state.bullets[bullet_index]) {
                 bullet_indexes.push(bullet_index as usize);
@@ -26,12 +30,14 @@ fn handle_bullet_collisions(state: &mut State) {
     for enemy_index in enemy_indexes.iter().rev() {
         if enemy_index < &state.enemies.len() {
             state.enemies.remove(*enemy_index);
+
+            state.score = state.score + 1;
         }
     }
 }
 
 fn is_bullet_collision(enemy: & EnemyState, bullet: & BulletState) -> bool {
-    return distance(enemy.x, enemy.y, bullet.x, bullet.y) <= (enemy.radius * 2 + 10) as f64;
+    return distance(enemy.x, enemy.y, bullet.x, bullet.y) <= (enemy.radius * 2 + bullet.height) as f64;
 }
 
 fn distance(x1: u16, y1: u16, x2: u16, y2: u16) -> f64 {

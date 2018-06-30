@@ -84,7 +84,7 @@ fn move_bullets(state: &mut State, elapsed_time: f32) {
 
     // remove bullets that goes off the screen
     state.bullets.retain(|bullet| {
-        bullet.y < height
+        bullet.y < height || bullet.y > height
     });
 }
 
