@@ -2,6 +2,8 @@
 
 A WebAssembly 2D shooter game written in rust.
 
+![screenshot](/doc/screenshot.png)
+
 ## Build
 
 ```bash
