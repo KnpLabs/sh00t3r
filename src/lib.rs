@@ -171,13 +171,6 @@ pub extern fn init_game() {
 }
 
 #[wasm_bindgen]
-pub extern fn hurt_player() {
-    let state = &mut STATE.lock().unwrap();
-
-    state.player.life = state.player.life - 1;
-}
-
-#[wasm_bindgen]
 pub extern fn render() -> bool {
     clear_stage();
     println!("Rendering next frame...");
