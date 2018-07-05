@@ -1,7 +1,8 @@
-use super::state::{BulletState,EnemyState,State};
+use super::state::{BulletState,EnemyState,PlayerState,State};
 
 pub fn handle_collisions(state: &mut State) {
     handle_player_bullets_collisions(state);
+    handle_player_enemy_collisions(state);
 }
 
 fn handle_player_bullets_collisions(state: &mut State) {
@@ -37,7 +38,28 @@ fn handle_player_bullets_collisions(state: &mut State) {
 }
 
 fn is_bullet_collision(enemy: & EnemyState, bullet: & BulletState) -> bool {
-    return distance(enemy.x, enemy.y, bullet.x, bullet.y) <= (enemy.radius * 2 + bullet.height) as f64;
+    distance(enemy.x, enemy.y, bullet.x, bullet.y) <= (enemy.radius + bullet.height) as f64
+}
+
+fn handle_player_enemy_collisions(state: &mut State) {
+    let mut dead_enemies_indices: Vec<usize> = vec![];
+
+    for enemy_index in 0..state.enemies.len() {
+        if is_player_collision(&state.enemies[enemy_index], &state.player) {
+            dead_enemies_indices.push(enemy_index);
+            state.player.life -= 1;
+        }
+    }
+
+    for enemy_index in dead_enemies_indices.iter().rev() {
+        if enemy_index < &state.enemies.len() {
+            state.enemies.remove(*enemy_index);
+        }
+    }
+}
+
+fn is_player_collision(enemy: & EnemyState, player: & PlayerState) -> bool {
+    distance(enemy.x, enemy.y, player.x, player.y) <= (enemy.radius + 20) as f64
 }
 
 fn distance(x1: u16, y1: u16, x2: u16, y2: u16) -> f64 {
